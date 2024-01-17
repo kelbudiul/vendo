@@ -1,0 +1,46 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Login - Vendo{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 my-10 shadow-md">
+    <h2 class="text-2xl font-semibold mb-6 text-center">Login to Your Account</h2>
+
+    <form method="post" class="flex flex-col space-y-4">
+        {% csrf_token %}
+        
+        <div>
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            {% for error in form.username.errors %}
+                <p class="text-red-500">{{ error }}</p>
+            {% endfor %}
+        </div>
+
+        <div>
+            {{ form.password.label_tag }}
+            {{ form.password }}
+            {% for error in form.password.errors %}
+                <p class="text-red-500">{{ error }}</p>
+            {% endfor %}
+        </div>
+
+        <div class="flex items-center justify-between">
+            <label class="flex items-center">
+                {{ form.remember_me }}
+                <span class="ml-2 text-sm">Remember me</span>
+            </label>
+            <a href="{% url 'users:password_reset' %}" class="text-blue-500 hover:underline">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800">
+            Login
+        </button>
+    </form>
+
+    <p class="mt-4 text-center text-gray-600">
+        Don't have an account? <a href="{% url 'users:signup' %}" class="text-blue-500 hover:underline">Sign up</a>
+    </p>
+</div>
+
+{% endblock %}

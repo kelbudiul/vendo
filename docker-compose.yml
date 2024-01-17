@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:alpine
+    volumes:
+      - ./data/db/:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=vendodb
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=94WW6gR2yw8X
+    container_name: 'vendo_db'
+    ports:
+      - "5432:5432"
+  
+  redis:
+    container_name: 'vendo_redis'
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+
+  server:
+    build:
+      context: .
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/usr/src/vendo/
+    container_name: 'vendo_backend'
+    depends_on:
+      - db
+      - redis
+
+  celery:
+    restart: always
+    command: celery -A core worker -l info
+    build: 
+      context: .
+    volumes:
+      - .:/usr/src/vendo/
+    depends_on:
+      - db
+      - redis
+      - server
+    container_name: 'vendo_celery'
+
+
+
+

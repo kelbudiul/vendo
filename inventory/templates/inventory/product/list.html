@@ -1,0 +1,83 @@
+{% extends "inventory/base.html" %}
+{% load static %}
+{% load mptt_tags %}
+{% block title %}
+    {% if category %}{{ category.name }}{% else %}Products{% endif %}
+{% endblock %}
+
+{% block content %}
+<main class="container mx-auto mt-8 flex">
+    <!-- Sidebar for Categories -->
+    <aside class="w-1/4 pr-8">
+        <h2 class="text-xl font-semibold mb-4">Categories</h2>
+        <ul>
+            <li {% if not category %}class="selected"{% endif %}><a href="{% url 'inventory:product_list' %}">All</a></li>
+            {% for c in categories %}
+                <li {% if category.slug == c.slug %}class="selected"{% endif %}><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <!-- Main Content with Filtering Panel -->
+    <section class="w-3/4">
+        <div class="flex items-center justify-between mb-4">
+            <!-- Filtering Panel -->
+            <div class="flex items-center space-x-4">
+                <label for="sort" class="text-sm">Sort by:</label>
+                <select id="sort" name="sort" class="p-2 border rounded text-sm">
+                    <option value="latest">Latest</option>
+                    <option value="price-low-high">Price: Low to High</option>
+                    <option value="price-high-low">Price: High to Low</option>
+                </select>
+
+                <label for="category" class="text-sm ml-4">Category:</label>
+                <select id="category" name="category" class="p-2 border rounded text-sm">
+                    <option value="all">All Categories</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="home">Home &amp; Kitchen</option>
+                    <!-- Add more categories as needed -->
+                </select>
+            </div>
+        </div>
+
+        <div id="main" class="grid grid-cols-3 gap-4">
+            <h1 class="text-2xl font-semibold mb-4 col-span-3">
+                {% if category %}
+                    {{ category.name }}
+                {% else %}
+                    Products
+                {% endif %}
+            </h1>
+
+            {% if category %}
+                <ul class="mb-4 col-span-3">
+                    {% recursetree category.get_children %}
+                        <li>
+                            {% if not node.is_leaf_node %}
+                                <a href="{{ node.get_absolute_url }}" class="text-blue-500 hover:underline">{{ node.name }}</a>
+                            {% elif node.is_leaf_node %}
+                                <a href="{{ node.get_absolute_url }}" class="text-blue-500 hover:underline">{{ node.name }}</a>
+                            {% endif %}
+                        </li>
+                    {% endrecursetree %}
+                </ul>
+            {% endif %}
+
+            {% if products %}
+                {% for product in products %}
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md">
+                        <a href="{{ product.get_absolute_url }}">
+                            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}" alt="{{ product.name }}" class="w-full h-48 object-cover">
+                        </a>
+                        <div class="p-4">
+                            <a href="{{ product.get_absolute_url }}" class="text-lg font-semibold text-blue-500 hover:text-blue-700">{{ product.name }}</a>
+                            <p class="text-gray-700">{{ product.price }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </section>
+</main>
+{% endblock %}

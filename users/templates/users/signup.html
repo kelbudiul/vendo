@@ -1,0 +1,57 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Sign Up - Vendo{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md">
+        <div class="bg-white p-8 shadow-md rounded-md">
+            <h2 class="text-3xl font-semibold mb-6 text-center">Create an Account</h2>
+
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    {{ form.username.label_tag }}
+                    {{ form.username }}
+                    {% for error in form.username.errors %}
+                        <p class="text-red-500">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-4">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                    {% for error in form.email.errors %}
+                        <p class="text-red-500">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-4">
+                    {{ form.password1.label_tag }}
+                    {{ form.password1 }}
+                    {% for error in form.password1.errors %}
+                        <p class="text-red-500">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-4">
+                    {{ form.password2.label_tag }}
+                    {{ form.password2 }}
+                    {% for error in form.password2.errors %}
+                        <p class="text-red-500">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+                    Sign Up
+                </button>
+            </form>
+
+            <p class="mt-4 text-center text-gray-600">
+                Already have an account? <a href="{% url 'users:login' %}" class="text-blue-500 hover:underline">Login</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

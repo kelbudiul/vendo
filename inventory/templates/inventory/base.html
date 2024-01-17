@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+ <head>
+ <meta charset="utf-8" />
+ <title>{% block title %}Vendo{% endblock %}</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ </head>
+ <body class="min-h-screen">
+
+ <header class="bg-gray-800 text-white py-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <!-- Logo -->
+        <div class="flex items-center">
+            <h1 class="text-xl font-bold"><a href="/">Vendo</a></h1>
+        </div>
+
+        <!-- Navigation Links -->
+        {% if user.is_authenticated %}
+            {% if user.vendor_user %}
+            <nav>
+            
+                <ul class="flex space-x-4">
+    <!--                <li><a href="#" class="hover:text-gray-300">Products</a></li>-->
+                    <li><a href="{% url 'vendors:request' %}" class="hover:text-gray-300">Product Management
+
+                    </a></li>
+                </ul>
+            </nav>
+            {% endif %}
+            
+            {% endif %}
+        
+<!--        <form action="#" method="get" class="flex items-center">-->
+<!--            <input type="text" name="q" placeholder="Search..." class="border p-2 rounded-l-md focus:outline-none focus:border-blue-500">-->
+<!--            <button type="submit" class="bg-blue-500 text-white p-2 rounded-r-md">Search</button>-->
+<!--        </form>-->
+        <!-- Authentication Links and Cart Icon -->
+        
+        {% if user.is_authenticated %}
+
+        <div class="flex items-center space-x-4">
+            <h3 class="text-xl font-semibold  text-center"><a href="{%url 'users:profile' %}">{{ user.username }}</a>!</h2>
+                <form method="post" action="{% url 'users:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Log out</button>
+                </form>
+        </div>
+        {% else %}
+        <div class="flex items-center space-x-4">
+            <a href="{% url 'users:login' %}" class="hover:text-gray-300">Account</a>
+        </div>
+        {% endif %}
+    </div>
+
+</header>
+
+ <!-- Search Panel -->
+<div class="bg-gray-200 py-4">
+    <div class="container mx-auto flex items-center justify-center">
+        <form action="#" method="get" class="flex items-center">
+            <input type="text" name="q" placeholder="Search..." class="border p-2 rounded-l-md focus:outline-none focus:border-blue-500">
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded-r-md">Search</button>
+        </form>
+    </div>
+</div>
+
+ <div id="subheader" class="mt-4 text-right mr-4">
+    <div class="cart text-sm text-gray-500 dark:text-gray-400 relative">
+        {% with total_items=cart|length %}
+            {% if total_items > 0 %}
+                <a href="{% url "cart:cart_detail" %}" class="text-blue-500">
+                    Your cart: {{ total_items }} item{{ total_items|pluralize }},
+                    {{ cart.get_total_price }}
+                </a>
+            {% elif not order %}
+                Your cart is empty.
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>
+
+
+ <div id="content" class="mt-3">
+ {% block content %}
+ {% endblock %}
+ </div>
+
+
+
+
+ <footer class="bg-white rounded-lg shadow m-4 dark:bg-gray-800">
+    <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
+      <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="#" class="hover:underline">Vendo</a>. All Rights Reserved.
+    </span>
+    <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
+        <li>
+            <a href="#" class="hover:underline me-4 md:me-6">About</a>
+        </li>
+        <li>
+            <a href="#" class="hover:underline me-4 md:me-6">Privacy Policy</a>
+        </li>
+        <li>
+            <a href="#" class="hover:underline">Contact</a>
+        </li>
+    </ul>
+    </div>
+</footer>
+
+
+ </body>
+</html>

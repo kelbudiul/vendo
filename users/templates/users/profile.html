@@ -1,0 +1,43 @@
+<!-- users/templates/users/profile.html -->
+
+{% extends 'inventory/base.html' %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 my-10 shadow-md">
+    <h2 class="text-3xl font-semibold mb-6 text-center text-gray-800">User Profile</h2>
+
+    <div class="mb-4">
+        <p class="text-gray-700"><strong>Username:</strong> {{ user.username }}</p>
+    </div>
+
+    <div class="mb-4">
+        <p class="text-gray-700"><strong>Email:</strong> {{ user.email }}</p>
+    </div>
+
+    <h3 class="text-lg font-semibold mb-4 text-gray-800">Order History</h3>
+
+    {% if user.orders.all %}
+        <ul class="list-disc pl-6">
+            {% for order in user.orders.all %}
+                <li class="mb-4">
+                    <p class="text-gray-700">
+                        <strong>Order ID:</strong> {{ order.id }}<br>
+                        <strong>Products:</strong>
+                        {% for item in order.items.all %}
+                            {{ item.product.name }},
+                        {% endfor %}
+                    </p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-gray-700">No orders found.</p>
+    {% endif %}
+
+    <!-- Add more profile information and styling as needed -->
+
+    <a href="#" class="text-blue-500 hover:underline">Edit Profile</a>
+</div>
+{% endblock %}
